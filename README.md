@@ -53,6 +53,15 @@ user.get_timeline do |hash, ns_error|
 end
 ```
 
+
+Get access to the streaming api "statusses/filter"
+```ruby
+user.statuses_filter ({:track=>"apple"}) do |tweet| 
+  p tweet[:user][:name] + " said: "
+  p tweet[:text]
+end
+
+```
 ## Installation
 
 1. `gem install twittermotion`
