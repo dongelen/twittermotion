@@ -7,6 +7,12 @@ class AppDelegate
 
       Twitter.sign_in do |granted, error|
         if granted
+          options = {:track=>"apple"}
+          Twitter.accounts[0].statuses_filter (options) do |tweet| 
+            p tweet[:user][:name] + " said: "
+            p tweet[:text]
+          end
+          
           compose = UIButton.buttonWithType(UIButtonTypeRoundedRect)
           compose.setTitle("Compose", forState:UIControlStateNormal)
           compose.sizeToFit

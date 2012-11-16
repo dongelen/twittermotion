@@ -35,5 +35,23 @@ module Twitter
         end
       })
     end
+    
+    # user.stream(include_entities: 1) do |hash|
+    # end   
+    def statuses_filter(options = {}, &block)
+      @stream_to_block = block
+      url = NSURL.URLWithString("https://stream.twitter.com/1.1/statuses/filter.json")
+      request = TWRequest.alloc.initWithURL(url, parameters:options, requestMethod:TWRequestMethodPOST)
+      request.account = self.ac_account
+      signedReq = request.signedURLRequest
+      @twitterConnection = NSURLConnection.alloc.initWithRequest(signedReq, delegate:self, startImmediately: false) 
+      @twitterConnection.scheduleInRunLoop(NSRunLoop.mainRunLoop, forMode:NSDefaultRunLoopMode)
+      @twitterConnection.start                 
+    end
+      
+    def connection(connection, didReceiveData:data)
+      object = NSJSONSerialization.JSONObjectWithData data, options: NSJSONReadingMutableContainers, error: nil
+      @stream_to_block.call(object) if object
+    end
   end
 end
